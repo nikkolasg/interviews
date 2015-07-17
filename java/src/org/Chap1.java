@@ -14,6 +14,7 @@ public class Chap1 {
         UniqueCharsTest();
         RotationBy90Test();
         StringPermutationTest();
+        ReplaceSpaceTest();
     }
 
     public static void StringPermutationTest() {
@@ -22,6 +23,29 @@ public class Chap1 {
         System.out.println("[+] String permutation " + s1 + " vs " + s2 + " : " + IsStringPermutation(s1, s2));
         s2 = "loehl2";
         System.out.println("[+] String permutation " + s1 + " vs " + s2 + " : " + IsStringPermutation(s1, s2));
+    }
+
+    public static void ReplaceSpaceTest() {
+        char[] s1 = { 'j','o','n',' ','i','s',' ','c','o','n',' ',' ',' ',' '};
+        int strLength = 10;
+        System.out.print("[+] ReplaceSpaceTest with " + new String(s1) + " => " );
+        ReplaceSpace(s1, strLength);
+        System.out.print(new String(s1) + "\n");
+    }
+    public static void ReplaceSpace(char[] array, int strLength) {
+        int n = array.length;
+        int j = array.length - 1;
+        for (int i = strLength - 1; i >= 0; i--) {
+            if (array[i] == ' ') {
+                array[j] = '0';
+                array[j-1] = '2';
+                array[j-2] = '%';
+                j -= 3;
+            } else {
+                array[j] = array[i];
+                j--;
+            }
+        }
     }
 
     public static boolean IsStringPermutation(String s1, String s2) {
