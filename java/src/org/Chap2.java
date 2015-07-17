@@ -26,10 +26,20 @@ public class Chap2 {
         list.DeleteDuplicate();
         System.out.println("[+] Delete Duplicates BUFFER : " + list.toString());
         list.Add(4);
+        list.Add(3);
+        list.Add(10);
         System.out.println("[+] List : " + list.toString());
         int pvalue = 6;
-        list.Partition(pvalue);
+        list.Partition2(pvalue);
         System.out.println("[+] List Partitioned around " + pvalue + " : " + list.toString());
+        LLInt empty = new LLInt();
+        System.out.println("[+] List empty : " + empty.toString());
+        empty.Partition2(pvalue);
+        System.out.println("[+] Partitioned ? : " + empty.toString());
+        empty.Add(2);
+        empty.Partition2(pvalue);
+        System.out.println("[+] List +2 Partitioned : " + empty.toString());
+
     }
 
 }
@@ -52,7 +62,35 @@ class LLInt {
     public LLInt() {
 
     }
+    public void Partition2(Integer value) {
+        if (head == null ) return;
+        // fake first node
+        IntNode superior = new IntNode(0);
+        IntNode current = new IntNode(0);
+        current.next = head;
+        IntNode tempHead = current;
+        IntNode tempSup = superior;
 
+        while (current.next != null) {
+
+            // test if it must be in the second list (superior > value)
+            if (current.next.value > value) {
+                // add it to the superior list
+                superior.next = current.next;
+                superior = superior.next;
+                // remove it from the current list
+                current.next = current.next.next;
+                // set to null the next node of superior.next
+                // so it ENDS the linked list
+                superior.next = null;
+            } else {
+                current = current.next;
+            }
+        }
+        head = tempHead.next;
+        current.next = tempSup.next;
+
+    }
     public void Partition(Integer value) {
         if(head == null) return;
         IntNode before = null;
