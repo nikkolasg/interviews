@@ -132,6 +132,40 @@ import java.util.*;
             int rightDepth = HeightNode(right,depth+1);
             return Integer.max(leftDepth, rightDepth);
         }
+
+        private class BalancedData {
+            public boolean balanced = true;
+            public int depth = 0;
+        }
+
+        public boolean isBalanced() {
+            BalancedData bd = isNodeBalanced(root);
+            return bd.balanced;
+        }
+
+        private BalancedData isNodeBalanced(BinaryNode node) {
+            BalancedData bd = new BalancedData();
+            if (node == null) {
+                return bd;
+            }
+
+            BalancedData left = isNodeBalanced(node.getLeftNode());
+            if (!left.balanced) return left;
+            BalancedData right = isNodeBalanced(node.getRightNode());
+            if (!right.balanced) return right;
+
+            if (left.depth < right.depth-1 || left.depth > right.depth+1) {
+                left.balanced = false;
+                return left;
+            }
+            if (right.depth < left.depth-1 || right.depth > left.depth+1) {
+                right.balanced = false;
+                return right;
+            }
+            bd.depth = Integer.max(right.depth,left.depth) + 1;
+            return bd;
+        }
+
         public String Print(SearchType type) {
             switch(type) {
                 case INORDER:
@@ -210,7 +244,11 @@ import java.util.*;
         }
         public void Add(T value) {
             BinaryNode<T> node = new BinaryNode<T>(value);
-            if (root == null) {
+            Add(node);
+        }
+
+        public void Add(BinaryNode node) {
+             if (root == null) {
                 root = node;
                 return;
             }
@@ -218,7 +256,7 @@ import java.util.*;
             stack.add(root);
             while(!stack.isEmpty()) {
                 BinaryNode<T> tmp = stack.poll();
-                if (tmp.Add(node) != false) break;
+                if (tmp.Add(node)) break;
                 for( BinaryNode<T> b : tmp.getChildrens()) {
                     stack.add(b);
                 }
@@ -349,6 +387,16 @@ public class TreeGraph {
         System.out.println("[+] List : " + tree.Print(SearchType.BFS));
         int v1 = 17,v2 = 25;
         Integer anc = tree.FindCommonAncestor(v1,v2);
-        System.out.println("[+] ==> Common Ancestor of (" + v1 +","+v2+") : " + (anc == null ? -1 : anc));
+        System.out.println("[+] ==> Common Ancestor of (" + v1 + "," + v2 + ") : " + (anc == null ? -1 : anc));
+
+        BinaryTree<Integer> balanced = new BinaryTree<Integer>();
+        balanced.Add(5);
+        balanced.Add(3);
+        balanced.Add(4);
+        BinaryNode<Integer> unbalancedNode = new BinaryNode<Integer>(2);
+        unbalancedNode.AddLeft(new BinaryNode<Integer>(1));
+        balanced.Add(unbalancedNode);
+        System.out.println("[+] Balanced : tree : " + balanced.Print(SearchType.BFS) + " => balanced? : " + balanced.isBalanced());
+        System.out.println("[+] Balanced : Tree : " + tree.Print(SearchType.BFS) + " => balanced? : " + tree.isBalanced());
     }
 }

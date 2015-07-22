@@ -1,7 +1,9 @@
 package org;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Stack;
 
 /**
  * Created by nikko on 7/17/15.
@@ -39,12 +41,29 @@ public class Chap2 {
         empty.Add(2);
         empty.Partition2(pvalue);
         System.out.println("[+] List +2 Partitioned : " + empty.toString());
+        list.Add(55);
+        System.out.println("[+] List current : " + list.toString());
+        list.SwapByTwo();
+        System.out.println("[+] List swapped : " + list.toString());
+
+        LLInt pal = new LLInt();
+        pal.Add(1);
+        pal.Add(2);
+        pal.Add(3);
+        pal.Add(4);
+        pal.Add(2);
+        pal.Add(1);
+        System.out.println("[+] List : " + pal.toString() + " => palindrome ? " + pal.isPalindrome());
+        System.out.println("[+] List : " + empty.toString() + " => palindrome ? " + empty.isPalindrome());
+        empty.Delete(2);
+        System.out.println("[+] List : " + empty.toString() + " => palindrome ? " + empty.isPalindrome());
+
 
     }
 
 }
 
-class IntNode {
+class IntNode implements Comparator<IntNode> {
     Integer value;
     IntNode next;
 
@@ -54,6 +73,15 @@ class IntNode {
     public String toString() {
         return value.toString();
     }
+
+    @Override
+    public int compare(IntNode intNode, IntNode t1) {
+        return intNode.value.compareTo(t1.value);
+    }
+
+    public boolean equals(IntNode n) {
+        return n.value.equals(value);
+    }
 }
 
 class LLInt {
@@ -62,6 +90,71 @@ class LLInt {
     public LLInt() {
 
     }
+
+    public String FastRunner() {
+        IntNode slow = head;
+        IntNode fast = head;
+
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        if (fast != null) { // ODD NUMBER
+            slow = slow.next;
+
+        }
+        return "";
+    }
+    public boolean isPalindrome() {
+        if(head == null) return true;
+        Stack<IntNode> s = new Stack<>();
+        IntNode slow = head;
+        IntNode fast = head;
+        int length = 1;
+        while (fast.next != null) {
+            s.push(slow);
+            slow = slow.next;
+            fast = fast.next.next;
+            length += 1;
+            if (fast == null) {
+                break;
+            }
+            length += 1;
+        }
+        if (length % 2 != 0 ) slow = slow.next;
+
+        IntNode tmp;
+        while ( !s.empty() && slow != null) {
+            tmp = s.pop();
+            if (!tmp.equals(slow))
+                return false;
+            slow = slow.next;
+        }
+        return true;
+    }
+
+    public void SwapByTwo() {
+        if (head == null) return;
+
+        IntNode current = new IntNode(0);
+        current.next = head;
+        IntNode first = current;
+        while (current.next != null) {
+            IntNode n1 = current.next;
+            IntNode n2 = current.next.next;
+            if(n2 == null) break; // we are at the end
+
+            IntNode last = n2.next;
+            current.next = n2;
+            n2.next = n1;
+            n1.next = last;
+
+            current = n1;
+        }
+
+        head = first.next;
+    }
+
     public void Partition2(Integer value) {
         if (head == null ) return;
         // fake first node
@@ -149,7 +242,11 @@ class LLInt {
 
     public IntNode Delete(Integer value) {
         if (head == null) return null;
-        if (head.value == value) return head;
+        if (head.value == value) {
+            IntNode tmp = head;
+            head = null;
+            return tmp;
+        }
         IntNode current = head;
         IntNode next = head.next;
         while (current != null && next != null) {
