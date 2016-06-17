@@ -15,4 +15,4 @@ puts "Calling without block :"
 methA
 puts "Calling with block : "
 methA { puts "This is the block" }
-
+puts "wow"
